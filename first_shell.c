@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void unused_developer_backdor() {
+void unused_developer_backdoor() {
   printf("Super-secret developer backdoor. Use with caution!\n");
   system("/bin/sh -i");
   exit (EXIT_SUCCESS);
