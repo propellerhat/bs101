@@ -19,9 +19,14 @@ fi
 echo "Current ASLR setting: ${aslr_setting} (${setting_description})"
 
 if [ "${aslr_setting}" = "2" ]; then
-    echo "Would you like to disable it [Yy/Nn]?"
+    echo "Would you like to disable it?"
+    echo "Y/N/Or type 'danger' to permanently disable it, even after reboot:"
     read response
-    if [ "${response^^}" = "Y" ]; then
+    if [ "${response^^}" = "DANGER" ]; then
+        echo "Permanently disabling ASLR..."
+        echo 0 | tee /proc/sys/kernel/randomize_va_space
+        echo "kernel.randomize_va_space = 0" > /etc/sysctl.d/01-disable-aslr.conf
+    elif [ "${response^^}" = "Y" ]; then
         echo "Disabling ASLR..."
         echo 0 | tee /proc/sys/kernel/randomize_va_space
     fi
@@ -30,10 +35,8 @@ else
     read response
     if [ "${response^^}" = "Y" ]; then
         echo "Enabling ASLR..."
+        rm -f /etc/sysctl.d/01-disable-aslr.conf
         echo 2 | tee /proc/sys/kernel/randomize_va_space
     fi
 fi
-
-# This would disable it across reboots:
-#echo "kernel.randomize_va_space = 0" > /etc/sysctl.d/01-disable-aslr.conf
 
