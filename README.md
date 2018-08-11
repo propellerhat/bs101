@@ -1,5 +1,13 @@
 # bs101
 
+A violently fast-paced introduction to stack smashing. There are countless such "courses" out there. All (including this one) have a major issue: depth vs. breadth. It is not possible to get this balance right unless you have only one student and you tailor the material specifically for that person's experience and prior knowledge. Knowing that a sane balance cannot be achieved, I've included a section at the end of each exercise for the student to dig deeper based on their experience level. There will be beginner material and reference guides as well as more advanced material for those who have prior experience in the subject.
+
+Why make *another* one of these? Valid question. I sometimes teach this to my fellow collogues as part of hack nights and similar venues. Going this route is much better than using an existing material set. I can tweak the material here and there to get a *not terrible* breadth/depth balance based on the time I have to get people through it and the experience level of the attendees.
+
+This specific material set has been tweaked over time to fit into a 2 hour hack night session. People will feel like a stone skipping across a very deep lake, but the goal is to get students interested in learning this stuff on their own. It's a good way for people to get their feet wet and get them excited with some early success.
+
+The material was designed and tested on 32bit x86 Kali Linux. It *should* work fine on any x86 32bit Linux.
+
 ## Install
 
 Run the following:
@@ -32,8 +40,55 @@ mov  ebp, esp
 sub  esp, 16
 xor  eax, eax
 ```
- * Instructions start with an English-like operation and are followed by any operands that the instruction operates on. There are two different 'flavors' of x86 assembly syntax. AT&T and Intel. The above example is Intel syntax, which lists destination operands first, and sources second. So the instruction `mov ebp, esp` will copy the contents of the register esp into the ebp register.
+ * Instructions start with an English-like operation and are followed by any operand(s) that the instruction operates on. There are two different 'flavors' of x86 assembly syntax. AT&T and Intel. The above example is Intel syntax, which lists destination operands first, and sources second. So the instruction `mov ebp, esp` will copy the contents of the register esp into the ebp register.
  * When a CPU deals with machine instructions, they are just bytes of data. The process of converting the human-readable mnemonics into raw bytes that the CPU understands is called assembly. The software program that performs the conversion is called an assembler.
  * A binary file (like our `hello` ELF binary) only contains the 'raw byte' form of machine code. In order to allow a human to examine a binary, a program called a disassembler must be used to translate the raw bytes back into a form that we can view and reason about.
  * `objdump` is a standard disassembler that can be used to examine a binary. Run `objdump -d hello` and examine the output.
  * You should notice that a lot of boilerplate code is included that we did not explicitly write. The disassembly is organized by function. Locate the `main` function and analyze the behavior and compare it to the source code.
+ * Common file types have associated applications. If you 'open' a pdf file, the system will launch the default application that knows how to process a pdf file (e.g. Adobe Reader). In a similar fashion, when you 'execute' an ELF binary a program called the loader gets invoked. The loader will parse the ELF file and take certain actions. It will map the ELF file's different sections to various areas of memory (RAM). It will also map in any libraries that the binary leverages (functions like `printf()`). These libraries are shared among many programs.
+
+#### Material
+ * [corkami's wonderful ELF file format graphic](https://github.com/corkami/pics/blob/master/binary/elf101/elf101.pdf) (corkami has amazing graphics for many things)
+ * `man elf`
+ * `man objdump`
+ * `man readelf`
+ * [Linkers and Loaders](https://www.iecc.com/linker/).
+
+### C Variables, Data, and Arrays
+
+Unlike most modern programming languages, C has a very limited set of atomic variable types.
+
+ * Integers. These come in many sizes and can be signed or unsigned. The default size of an integer when declared using `int` varies from system to system. For our environment, they happen to be 4 bytes.
+ * Floating point variables. `floats` and `double` precision floats.
+ * Pointers. These are memory addresses. Their size depends on the platform. For 32bit platforms they are 4 bytes.
+ * Characters. You can think of these as unsigned 8 bit integers. On some platforms, one is defined in terms of the other.
+
+#### Byte Sex
+
+There are two common ways that multi-byte integers and pointers are stored in memory in modern computing platforms. One way stores the least-significant byte at the lower memory address. This method is called little-endian. Some thought it would be logical to store integers in this way since the lowest address contains the least significant byte. However, that is not how most humans read information.
+
+#### Negative Numbers
+
+ * `./gcc_unsafe twos_insult.c`
+ * What do you expect to happen when we run the program?
+ * What actually happens?
+ * What is going on here (the compiler should give you a warning that hints at the underlying issue)?
+
+#### Arrays and Structs
+An array is simply an area of memory where adjacent, contiguous atomic types are stored right next to each other. The compiler takes care of the math when indexing into the array. It knows the basic type of each object, so it can calculate the memory address by doing simple multiplications and addition.
+A `struct` is similar, except that the types that are stored next to each other can be different. Because the types can differ, accessing struct members requires a little more book keeping. Additionally, the struct members might not be exactly adjacent. The compiler might leave extra room between members in the name of alignment.
+
+#### Compile `where_variables_live.c`
+Additional material coming soon.
+#### Memory Trespass
+Additional material coming soon.
+### The C Runtime
+Additional material coming soon.
+#### Runtime Data Structures
+Additional material coming soon.
+##### Runtime Stack
+Additional material coming soon.
+#### cdecl Calling Convention
+Additional material coming soon.
+### Hijacking Control Flow
+Additional material coming soon.

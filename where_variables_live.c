@@ -10,6 +10,7 @@ int add_function(int a, int b) {
 
 int main(int argc, char *argv[]) {
   int stack_variable = 0;
+  int stack_array[64];
   void *heap_variable = malloc(100);
 
   printf("Address of stack_variable: %p\n", &stack_variable);
