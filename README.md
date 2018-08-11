@@ -63,32 +63,44 @@ Unlike most modern programming languages, C has a very limited set of atomic var
  * Pointers. These are memory addresses. Their size depends on the platform. For 32bit platforms they are 4 bytes.
  * Characters. You can think of these as unsigned 8 bit integers. On some platforms, one is defined in terms of the other.
 
-#### Byte Sex
+### Byte Sex
 
 There are two common ways that multi-byte integers and pointers are stored in memory in modern computing platforms. One way stores the least-significant byte at the lower memory address. This method is called little-endian. Some thought it would be logical to store integers in this way since the lowest address contains the least significant byte. However, that is not how most humans read information.
 
-#### Negative Numbers
+Keep this in mind when viewing memory. Most tools and debuggers will display information in ascending address order which will reverse pointers and integers. Also, memory copy operations happen from lowest to highest address. Therefore, when our input is copied around using `strcpy()` and the likes, we must account for the ascending order of the copy.
+
+#### Material
+ * [Endianness](https://en.wikipedia.org/wiki/Endianness)
+
+### Negative Numbers
 
  * `./gcc_unsafe twos_insult.c`
  * What do you expect to happen when we run the program?
  * What actually happens?
  * What is going on here (the compiler should give you a warning that hints at the underlying issue)?
 
-#### Arrays and Structs
+#### Material
+ * [Two's Compliment](https://en.wikipedia.org/wiki/Two%27s_complement)
+
+### Arrays and Structs
 An array is simply an area of memory where adjacent, contiguous atomic types are stored right next to each other. The compiler takes care of the math when indexing into the array. It knows the basic type of each object, so it can calculate the memory address by doing simple multiplications and addition.
 A `struct` is similar, except that the types that are stored next to each other can be different. Because the types can differ, accessing struct members requires a little more book keeping. Additionally, the struct members might not be exactly adjacent. The compiler might leave extra room between members in the name of alignment.
 
-#### Compile `where_variables_live.c`
+### Compile `where_variables_live.c`
 Additional material coming soon.
-#### Memory Trespass
+
+#### Material
+ * [Program Memory](https://en.wikipedia.org/wiki/Data_segment#Program_memory)
+
+### Memory Trespass
 Additional material coming soon.
 ### The C Runtime
 Additional material coming soon.
-#### Runtime Data Structures
+### Runtime Data Structures
 Additional material coming soon.
-##### Runtime Stack
+#### Runtime Stack
 Additional material coming soon.
-#### cdecl Calling Convention
+### cdecl Calling Convention
 Additional material coming soon.
 ### Hijacking Control Flow
 Additional material coming soon.
