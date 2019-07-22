@@ -71,6 +71,7 @@ Keep this in mind when viewing memory. Most tools and debuggers will display inf
 
 #### Material
  * [Endianness](https://en.wikipedia.org/wiki/Endianness)
+ * [Are you a glutton for punishment?](https://blog.legitbs.net/2017/07/the-clemency-architecture.html)
 
 ### Negative Numbers
 
@@ -82,25 +83,29 @@ Keep this in mind when viewing memory. Most tools and debuggers will display inf
 #### Material
  * [Two's Compliment](https://en.wikipedia.org/wiki/Two%27s_complement)
 
-### Arrays and Structs
-An array is simply an area of memory where adjacent, contiguous atomic types are stored right next to each other. The compiler takes care of the math when indexing into the array. It knows the basic type of each object, so it can calculate the memory address by doing simple multiplications and addition.
-A `struct` is similar, except that the types that are stored next to each other can be different. Because the types can differ, accessing struct members requires a little more book keeping. Additionally, the struct members might not be exactly adjacent. The compiler might leave extra room between members in the name of alignment.
-
 ### Compile `where_variables_live.c`
-Additional material coming soon.
+Depending on where you declare and initialize variables, they will end up in very different places.
 
 #### Material
  * [Program Memory](https://en.wikipedia.org/wiki/Data_segment#Program_memory)
 
+### Compile `array.c`
+
+
 ### Memory Trespass
-Additional material coming soon.
+Did you notice anything strange about `array.c`? In particular, line 28? This is an illustration of C's lack of memory safety.
+
 ### The C Runtime
 Additional material coming soon.
+
 ### Runtime Data Structures
 Additional material coming soon.
+
 #### Runtime Stack
 Additional material coming soon.
+
 ### cdecl Calling Convention
 Additional material coming soon.
+
 ### Hijacking Control Flow
 Additional material coming soon.
