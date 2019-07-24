@@ -86,6 +86,14 @@ Keep this in mind when viewing memory. Most tools and debuggers will display inf
 ### Compile `where_variables_live.c`
 Depending on where you declare and initialize variables, they will end up in very different places.
 
+ * Run `size -A where_variables_live | egrep '(bss|data|rdata|text)'`. Note the size of each section.
+ * Change `char global_variable[10];` to `char global_variable[10000];`
+ * Recompile and run the size command again. What has changed?
+ * Change the string assigned to `global_initialized_variable` to something much longer (default is `"lel"`)
+ * Recompile and run the size command again. What changed this time?
+ * Change the size of `stack_array` from 64 to 2048. Recompile and run the size command.
+ * Can you explain what you observed? Did it violate your expectations?
+
 #### Material
  * [Program Memory](https://en.wikipedia.org/wiki/Data_segment#Program_memory)
 
