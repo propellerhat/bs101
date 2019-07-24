@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   printf("%c\n", *(a+2));
   printf("%c\n", a[0]);
 
-  printf("%s\n", a[32]);
+  printf("%s\n", &b[32]);
 
   strcpy(a, "byebye");
   printf("%s\n", a);

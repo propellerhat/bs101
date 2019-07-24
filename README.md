@@ -104,16 +104,21 @@ Depending on where you declare and initialize variables, they will end up in ver
 Did you notice anything strange about `array.c`? In particular, line 28? This is an illustration of C's lack of memory safety.
 
 ### The C Runtime
-Additional material coming soon.
+"The greatest trick that C ever pulled was convincing the world it doesn't have a runtime." -- Dan Guido (i think. one of his hn comments is where I saw it first.)
 
 ### Runtime Data Structures
-Additional material coming soon.
+There are several data structures and components to the C runtime.
+ * The runtime resolver.
+ * A memory manager (when you invoke `malloc()` family of functions)
+ * Several data structures
 
 #### Runtime Stack
-Additional material coming soon.
+For our purposes, we will focus on the runtime stack. On x86, the runtime stack is a hardware supported runtime data structure.
+
+More materials coming soon.
 
 ### cdecl Calling Convention
-Additional material coming soon.
+More material coming soon.
 
 ### Hijacking Control Flow
 Additional material coming soon.
