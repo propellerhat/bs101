@@ -23,11 +23,7 @@ fi
 sudo -u $real_user chmod +x aslr_ctl.sh
 sudo -u $real_user chmod +x gcc_unsafe
 
-cd /home/"${real_user}"
-sudo -u $real_user git clone https://github.com/pwndbg/pwndbg
-cd pwndbg/
-sudo -u $real_user ./setup.sh
-cd /home/"${real_user}"
+sudo -u $real_user wget -q -O- https://github.com/hugsy/gef/raw/master/scripts/gef.sh | sudo -u $real_user sh
 
 echo "This script will disable ASLR systemwide until it is manually re-enabled"
 echo "or until the machine restarts. The shell script 'aslr_ctl.sh' can be used"
