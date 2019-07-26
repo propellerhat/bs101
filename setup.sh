@@ -20,9 +20,15 @@ else
     real_user=$(whoami)
 fi
 
+# Make helper scripts executable.
 sudo -u $real_user chmod +x aslr_ctl.sh
 sudo -u $real_user chmod +x gcc_unsafe
 
+# Install dependencies
+apt update && apt install cmake # Needed by keystone-engine
+pip3 install keystone-engine unicorn ropper # To get full GEF functionality
+
+# Install GEF in the most YOLO way
 sudo -u $real_user wget -q -O- https://github.com/hugsy/gef/raw/master/scripts/gef.sh | sudo -u $real_user sh
 
 echo "This script will disable ASLR systemwide until it is manually re-enabled"
