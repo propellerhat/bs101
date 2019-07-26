@@ -84,7 +84,7 @@ Depending on where you declare and initialize variables, they will end up in ver
 
 ### Compile `array.c`
 This program is designed to highlight the fact that C is not doing any safety checking for you when you access memory. Everything is just pointers and offsets. The only thing that C is doing for you is keeping track of the underlying data types and calculating the offsets for you.
-See if you can correlate each output line with its source line that caused it.
+See if you can correlate each output line with the source line that caused it.
 
 ### Memory Trespass
 Did you notice anything strange about `array.c`? In particular, line 28? Can you explain what is going on here? This is an illustration of what is possible with C's lack of memory safety. You can access arbitrary memory through the use of pointers and offsets that was probably never intended by the programmer.
@@ -92,18 +92,27 @@ Did you notice anything strange about `array.c`? In particular, line 28? Can you
 ### The C Runtime
 "The greatest trick that C ever pulled was convincing the world it doesn't have a runtime." -- Dan Guido, probably (One of his hn comments is where I saw it first so he gets the credit)
 
-You'd be forgiven for having the mindset that C doesn't have a runtime. When you really think about it, a typical compiled binary written in C is not fully self-contained. Run `ldd array`. The output of the `ldd` command will be a list of the shared libraries the specific binary is linked against. You should notice an entry that contains `ld-linux.so.2` or similarly named shared object file. This is the dynamic loader. It's responsible for resolving all other runtime dependancies, loading the appropriate libraries into the process memory space, and fixing up all references to said dependancies. You can further see this if you run `readelf -a array` and look for entries with `INTERP`. You may see some text like "The program is requesting the interpreter 
+You'd be forgiven for having the mindset that C doesn't have a runtime. When you really think about it, a typical compiled binary written in C is not fully self-contained. Run `ldd array`. The output of the `ldd` command will be a list of the shared libraries the specific binary is linked against. You should notice an entry that contains `ld-linux.so.2` or similarly named shared object file. This is the dynamic loader. It's responsible for resolving all other runtime dependancies, loading the appropriate libraries into the process memory space, and fixing up all references to said dependancies. You can further see this if you run `readelf -a array` and look for entries with `INTERP`. You may see some text like "[Requesting program intrepreter: /lib/ld-linux.so.2]." As the text in the `readelf` output implies, control isn't directly passed to the binary. Instead, the "interpreter" is invoked and it is responsible for setting up the runtime enivironment for the binary and then passing execution control off to it.
+
+In addition to setting up the initial environment for the binary, the loader can also provide lazy library function resolution at the time of the function call. This can be seen in a debugger in some cases. Look for functions named `_dl_runtime_resolve` or similar.
+
+#### Material
+ * [Runtime Symbol Resolution](https://www.slideshare.net/kentarokawamoto/runtime-symbol-resolution)
 
 ### Runtime Data Structures
-There are several data structures and components to the C runtime.
- * The runtime resolver.
- * A memory manager (when you invoke `malloc()` family of functions)
- * Several data structures
+There are several data structures that exist only at runtime. The heap and the stack are two examples. We will be ignoring the heap, but feel free to browse the links at the end of this section if you're curious.
 
 #### Runtime Stack
-For our purposes, we will focus on the runtime stack. On x86, the runtime stack is a hardware supported runtime data structure.
+On x86, the runtime stack is a hardware supported runtime data structure. Technically, this is an architecture-level data structure (below even C). Several assembly instructions exist to manipulate the stack.
+```assembly
+push <register|immediate> ; This adds the contents of a register (or an constant value) to the top of the stack
+pop <resgister> ; This removes an item from the top of the stack and places it into a register
+```
 
-More materials coming soon.
+There is even a special register dedicated to storing the address of the top of the stack called `esp` (or just the stack pointer). When `push` or `pop` instructions are executed, the stack pointer (`esp`) is adjusted automatically. By convention, the use of another register, `ebp`, is reserved for storing the start of a function's stack frame. `ebp` is not automatically updated and its use as the base pointer is purely by convention and not enforced by the architecture in the same way as `esp`.
+
+#### Material
+ * [Dynamic Memory](https://en.wikipedia.org/wiki/C_dynamic_memory_allocation)
 
 ### cdecl Calling Convention
 More material coming soon.
