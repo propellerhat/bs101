@@ -92,7 +92,7 @@ Did you notice anything strange about `array.c`? In particular, line 28? Can you
 ### The C Runtime
 "The greatest trick that C ever pulled was convincing the world it doesn't have a runtime." -- Dan Guido, probably (One of his hn comments is where I saw it first so he gets the credit)
 
-You'd be forgiven for having the mindset that C doesn't have a runtime. When you really think about it, a typical compiled binary written in C is not fully self-contained. Run `ldd array`. The output of the `ldd` command will be a list of the shared libraries the specific binary is linked against. You should notice an entry that contains `ld-linux.so.2` or similarly named shared object file. This is the dynamic loader. It's responsible for resolving all other runtime dependancies, loading the appropriate libraries into the process memory space, and fixing up all references to said dependancies. You can further see this if you run `readelf -a array` and look for entries with `INTERP`. You may see some text like "[Requesting program intrepreter: /lib/ld-linux.so.2]." As the text in the `readelf` output implies, control isn't directly passed to the binary. Instead, the "interpreter" is invoked and it is responsible for setting up the runtime enivironment for the binary and then passing execution control off to it.
+You'd be forgiven for having the mindset that C doesn't have a runtime. When you really think about it, a typical compiled binary written in C is not fully self-contained. Run `ldd array`. The output of the `ldd` command will be a list of the shared libraries the specific binary is linked against. You should notice an entry that contains `ld-linux.so.2` or similarly named shared object file. This is the dynamic loader. It's responsible for resolving all other runtime dependencies, loading the appropriate libraries into the process memory space, and fixing up all references to said dependencies. You can further see this if you run `readelf -a array` and look for entries with `INTERP`. You may see some text like "[Requesting program interpreter: /lib/ld-linux.so.2]." As the text in the `readelf` output implies, control isn't directly passed to the binary. Instead, the "interpreter" is invoked and it is responsible for setting up the runtime environment for the binary and then passing execution control off to it.
 
 In addition to setting up the initial environment for the binary, the loader can also provide lazy library function resolution at the time of the function call. This can be seen in a debugger in some cases. Look for functions named `_dl_runtime_resolve` or similar.
 
@@ -115,10 +115,18 @@ There is even a special register dedicated to storing the address of the top of 
  * [Dynamic Memory](https://en.wikipedia.org/wiki/C_dynamic_memory_allocation)
 
 ### cdecl Calling Convention
-More material coming soon.
+Compile `calling_convention.c` and inspect the assembly code produced. Try to correlate what you see in the source file with the assembly produced. You will notice that:
+
+ * If a function (subroutine) takes any arguments, they are pushed onto the stack in reverse order.
+ * If the calling function wants to preserve register values in `eax`, `ecx` or `edx`, it must save them (usually by `push`ing them on the stack and `pop`ping them when the function returns.
+ * The most sensible way to call a function is to use the `call` assembly instruction. This instruction implicitly `push`es the instruction pointer onto the stack.
+ * Within the called function, if any registers are going to be used, their value is saved at the beginning of the subroutine and restored before the `ret` instruction. The most common saved register is `ebp`. This is why the first instruction in almost every subroutine is `push ebp`
+ * All function local variables live on the stack. You will usually see a direct manipulation of `esp` to make room for local variables (e.g. `sub esp,0x20`). This must be undone towards the end of the function.
+ * Returning a value from a function is accomplished by storing that value in the `eax` register.
+ * The assembly instruction `ret` is equivalent to `pop eip`
 
 ### Smashing the Stack
-
+Given what we know about how the stack is used, compile `crashme.c` and try to crash the program. What happens when the program crashes? How did you accomplish this? What is going on under the hood to cause the program to crash?
 
 ### Hijacking Control Flow
-Additional material coming soon.
+Now it's time to use what you have learned to do something useful. Compile `first_shell.c` and try to get a shell. How will you accomplish this?
